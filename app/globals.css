@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default genome variables - will be overridden by adaptation rules */
+  --genome-animation-fast: 150ms;
+  --genome-animation-balanced: 250ms;
+  --genome-animation-slow: 400ms;
+  
+  --genome-spacing-compact: 0.5rem;
+  --genome-spacing-standard: 1rem;
+  --genome-spacing-spacious: 1.5rem;
+  
+  --genome-primary: #3b82f6;
+  --genome-secondary: #64748b;
+  --genome-accent: #8b5cf6;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Smooth scrolling adapted to genome */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Adaptive transitions */
+.transition-genome {
+  transition-duration: var(--genome-animation-balanced);
+  transition-timing-function: ease-out;
+}
+
