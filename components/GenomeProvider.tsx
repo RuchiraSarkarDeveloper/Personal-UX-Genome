@@ -19,7 +19,7 @@ export function GenomeProvider({ children }: { children: React.ReactNode }) {
   const inferenceRef = useRef<TraitInferenceEngine | null>(null);
   const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
-  const { genome, updateGenome, learningEnabled } = useGenomeStore();
+  const { genome, updateGenome } = useGenomeStore();
 
   // Handle hydration
   useEffect(() => {
@@ -39,13 +39,16 @@ export function GenomeProvider({ children }: { children: React.ReactNode }) {
     const capture = captureRef.current;
     const inference = inferenceRef.current;
 
+    // Guard against null references
+    if (!capture || !inference) return;
+
     // Subscribe to signals and infer traits periodically
     const unsubscribe = capture.subscribe(() => {
       // Debounced inference (runs every 5 seconds)
       if (updateIntervalRef.current) return;
       
       updateIntervalRef.current = setTimeout(() => {
-        if (learningEnabled && genome.learningEnabled) {
+        if (genome.learningEnabled && inference) {
           const recentSignals = capture.getRecentSignals(30000); // Last 30 seconds
           
           if (recentSignals.length > 0) {
@@ -70,7 +73,7 @@ export function GenomeProvider({ children }: { children: React.ReactNode }) {
         clearTimeout(updateIntervalRef.current);
       }
     };
-  }, [genome, updateGenome, learningEnabled, isMounted]);
+  }, [genome, updateGenome, isMounted]);
 
   // Re-apply rules when genome updates
   useEffect(() => {
