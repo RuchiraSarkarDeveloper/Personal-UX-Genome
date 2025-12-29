@@ -4,6 +4,7 @@ import { AdaptiveButton } from '@/components/AdaptiveButton';
 import { AdaptiveCard } from '@/components/AdaptiveCard';
 import { AdaptiveTooltip } from '@/components/AdaptiveTooltip';
 import { GenomeVisualization } from '@/components/GenomeVisualization';
+import { ClientOnly } from '@/components/ClientOnly';
 import { useState } from 'react';
 
 export default function Home() {
@@ -104,7 +105,9 @@ export default function Home() {
         </section>
 
         {/* Genome Visualization */}
-        <GenomeVisualization />
+        <ClientOnly>
+          <GenomeVisualization />
+        </ClientOnly>
       </div>
     </main>
   );

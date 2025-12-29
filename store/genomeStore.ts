@@ -182,7 +182,13 @@ export const useGenomeStore = create<GenomeStore>()(
     }),
     {
       name: 'ux-genome-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: typeof window !== 'undefined' 
+        ? createJSONStorage(() => localStorage)
+        : createJSONStorage(() => ({
+            getItem: () => null,
+            setItem: () => {},
+            removeItem: () => {},
+          })),
       version: 1,
     }
   )

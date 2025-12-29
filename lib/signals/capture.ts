@@ -20,7 +20,10 @@ export class SignalCapture {
   private listeners: ((signal: SignalCollection) => void)[] = [];
 
   constructor() {
-    this.setupListeners();
+    // Only setup listeners in browser environment
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      this.setupListeners();
+    }
   }
 
   subscribe(callback: (signal: SignalCollection) => void) {
@@ -41,6 +44,9 @@ export class SignalCapture {
   }
 
   private setupListeners() {
+    // Guard against SSR
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    
     // Click tracking
     document.addEventListener('click', (e) => {
       const target = e.target;

@@ -7,20 +7,29 @@
 
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SignalCapture } from '@/lib/signals/capture';
 import { TraitInferenceEngine } from '@/lib/inference/engine';
 import { useGenomeStore } from '@/store/genomeStore';
 import { generateAdaptationRules, applyAdaptationRules } from '@/lib/adaptation/rules';
 
 export function GenomeProvider({ children }: { children: React.ReactNode }) {
+  const [isMounted, setIsMounted] = useState(false);
   const captureRef = useRef<SignalCapture | null>(null);
   const inferenceRef = useRef<TraitInferenceEngine | null>(null);
   const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const { genome, updateGenome, learningEnabled } = useGenomeStore();
 
+  // Handle hydration
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Only run on client after mount
+    if (typeof window === 'undefined' || !isMounted) return;
+    
     // Initialize signal capture
     if (!captureRef.current) {
       captureRef.current = new SignalCapture();
@@ -61,7 +70,7 @@ export function GenomeProvider({ children }: { children: React.ReactNode }) {
         clearTimeout(updateIntervalRef.current);
       }
     };
-  }, [genome, updateGenome, learningEnabled]);
+  }, [genome, updateGenome, learningEnabled, isMounted]);
 
   // Re-apply rules when genome updates
   useEffect(() => {

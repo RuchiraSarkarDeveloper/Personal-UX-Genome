@@ -17,6 +17,8 @@ export function GenomeVisualization() {
   const [exportSuccess, setExportSuccess] = useState(false);
 
   const handleExport = () => {
+    if (typeof window === 'undefined' || !navigator.clipboard) return;
+    
     const json = exportGenome();
     navigator.clipboard.writeText(json);
     setExportSuccess(true);
@@ -24,6 +26,8 @@ export function GenomeVisualization() {
   };
 
   const handleImport = () => {
+    if (typeof document === 'undefined') return;
+    
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'application/json';
